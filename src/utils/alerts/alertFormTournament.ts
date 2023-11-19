@@ -2,7 +2,8 @@ import { TypeFormTournament } from "@/types/formTournament";
 import moment from "moment";
 import Swal from "sweetalert2";
 
-export const alertFormTournament = async (): Promise<TypeFormTournament> => {
+
+export const alertFormTournament = async (initialValues?: TypeFormTournament): Promise<TypeFormTournament> => {
 
   const formInputDefault: TypeFormTournament = {
     name: '',
@@ -11,17 +12,27 @@ export const alertFormTournament = async (): Promise<TypeFormTournament> => {
   };
 
   const formHtml = `
-    <form id="myForm">
-      <div class="form-wrapper">
-        <input id="nombre" class="swal2-input compact-input" placeholder="Nombre Categoria">
-        <input  type="date" id="fecha" class="swal2-input compact-input" placeholder="Descripción Categoria" type="text">
-        <select id="jugadores" class="swal2-input compact-input">    
-          <option value="${1}" >1 vs 1</option>
-          <option value="${1}" >2 vs 2</option>
+  <form id="myFormTournament" class="custom-form">
+    <div class="form-group">
+      <label for="nombre">Nombre Torneo:</label>
+      <input id="nombre" placeholder="Ingrese el nombre" value="${initialValues?.name || ''}">
+    </div>
+
+    <div class="form-group">
+      <label for="fecha">Fecha:</label>
+      <input type="date" id="fecha" placeholder="Seleccione la fecha" value="${initialValues?.date || ''}">
+    </div>
+
+    <div class="form-group">
+      <label for="jugadores">Jugadores:</label>
+      <select id="jugadores">
+        <option value="1" ${initialValues?.players === 1 ? 'selected' : ''}>1 vs 1</option>
+        <option value="2" ${initialValues?.players === 2 ? 'selected' : ''}>2 vs 2</option>
       </select>
-      </div>
-    </form>
+    </div>
+  </form>
   `;
+
 
   try {
     const result = await Swal.fire({
@@ -30,7 +41,7 @@ export const alertFormTournament = async (): Promise<TypeFormTournament> => {
       showCancelButton: true,
       showConfirmButton: true,
       confirmButtonText: 'Confirmar',
-      customClass:'alert-form',
+      customClass: 'alert-form',
       preConfirm: () => {
         return new Promise((resolve) => {
           // Aquí manejas la lógica de envío del formulario

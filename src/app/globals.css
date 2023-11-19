@@ -4,68 +4,84 @@
 
 /* Estilos de la barra de desplazamiento en navegadores basados en WebKit (Chrome y Safari) */
 ::-webkit-scrollbar {
-  width: 7px; /* Ancho de la barra de desplazamiento */
+  width: 7px;
+  /* Ancho de la barra de desplazamiento */
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #1C1C24; /* Color del pulgar (barra móvil) */
-  border-radius: 6px; /* Borde redondeado del pulgar */
-  border: 1px solid rgb(105, 104, 105); /* Borde blanco del pulgar */
+  background-color: #1C1C24;
+  /* Color del pulgar (barra móvil) */
+  border-radius: 6px;
+  /* Borde redondeado del pulgar */
+  border: 1px solid rgb(105, 104, 105);
+  /* Borde blanco del pulgar */
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #1C1C24; /* Color de fondo de la barra de desplazamiento */
+  background-color: #1C1C24;
+  /* Color de fondo de la barra de desplazamiento */
 }
 
 /* Estilos de la barra de desplazamiento en navegadores basados en Firefox */
 /* Establecer el ancho y color de la barra de desplazamiento en Firefox */
 scrollbar-width: thin;
-scrollbar-color: #666 #000; /* Color del pulgar y fondo de la barra de desplazamiento en Firefox */
+scrollbar-color: #666 #000;
+/* Color del pulgar y fondo de la barra de desplazamiento en Firefox */
 
 
-.color-fondo{
+.color-fondo {
   background: #1C1C24;
 }
 
-.color-navbar{
+.color-navbar {
   background: #15151A;
 }
+
+
+/* clases de alertFormAlert*/
 
 .alert-form {
   background: #15151A;
-  border: 1px solid rgb(100 116 139 ); /* Ajusta el grosor y el color del borde según tus necesidades */
+  border: 1px solid rgb(100 116 139);
   border-radius: 10%;
-  color: rgb(100 116 139) ;
+  color: rgb(100 116 139);
   flex-direction: column;
+  width: max-content;
 }
 
 
-.text-navbar{
-  color: #15151A;
+.custom-form {
+  background-color: #15151A;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  max-width: 100%;
+  margin: 0 auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  color: #FFFFFF; /* Color del texto */
 }
 
-/*
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+label {
+  margin-bottom: 5px;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+input,
+select {
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #7E7E7E; /* Color del borde de los inputs */
+  border-radius: 5px;
+  background-color: #FFFFFF; /* Color de fondo de los inputs */
+  color: #15151A; /* Color del texto dentro de los inputs */
+  margin-top: 3px; /* Ajuste para alinear correctamente con el borde del label */
 }
-*/
+
+select {
+  width: 100%; /* Ajusta el ancho del select al 100% */
+}
