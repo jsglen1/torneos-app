@@ -31,6 +31,15 @@ scrollbar-color: #666 #000; /* Color del pulgar y fondo de la barra de desplazam
   background: #15151A;
 }
 
+.alert-form {
+  background: #15151A;
+  border: 1px solid rgb(100 116 139 ); /* Ajusta el grosor y el color del borde según tus necesidades */
+  border-radius: 10%;
+  color: rgb(100 116 139) ;
+  flex-direction: column;
+}
+
+
 .text-navbar{
   color: #15151A;
 }

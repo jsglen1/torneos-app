@@ -7,6 +7,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx'
+import MenuDrawer from './MenuDrawer'
 
 interface MenuProps {
     children: React.ReactNode;
@@ -25,7 +26,7 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
                     <ul className='flex text-white gap-2 justify-between w-full items-center'>
 
                         <div className='flex gap-3 items-center'>
-                            <li>
+                            <li className='md:hidden'>
                                 <Image src={'/barra-de-menus.png'} alt='agregar-usuario' width={35} height={35} className='p-1 bg-white rounded-full border-slate-500 border hover:cursor-pointer' onClick={() => { dispatch(handleMenuDrawer()) }} />
                             </li>
 
@@ -51,6 +52,7 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
                         </div>
                     </ul>
                 </nav>
+                <MenuDrawer/>
             </header>
 
             <div className='h-[92vh] w-full flex' style={{ background: '#1C1C24' }}>
@@ -63,6 +65,11 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
                         <li className={clsx('flex gap-1 justify-start items-center p-1', { 'bg-green-500 rounded-full': pathname === '/dashboard/tournaments' })}>
                             <Image src={'/copa-de-trofeo-silueta.png'} alt='copa' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />
                             <Link href={'/dashboard/tournaments'}>Torneos</Link>
+                        </li>
+                        {/* para admin*/}
+                        <li className={clsx('flex gap-1 justify-start items-center p-1', { 'bg-green-500 rounded-full': pathname === '/dashboard/events' })}>
+                            <Image src={'/eventos.png'} alt='copa' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />
+                            <Link href={'/dashboard/events'}>Eventos</Link>
                         </li>
                         <li className={clsx('flex gap-1 justify-start items-center p-1', { 'bg-green-500 rounded-full': pathname === '/dashboard/setting' })}>
                             <Image src={'/configuraciones.png'} alt='configuraciones' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />
@@ -77,6 +84,10 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
                     {children}
                 </main>
             </div>
+
+        
+
+
         </>
     )
 }
