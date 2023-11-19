@@ -2,6 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Estilos de la barra de desplazamiento en navegadores basados en WebKit (Chrome y Safari) */
+::-webkit-scrollbar {
+  width: 7px; /* Ancho de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #1C1C24; /* Color del pulgar (barra móvil) */
+  border-radius: 6px; /* Borde redondeado del pulgar */
+  border: 1px solid rgb(105, 104, 105); /* Borde blanco del pulgar */
+}
+
+::-webkit-scrollbar-track {
+  background-color: #1C1C24; /* Color de fondo de la barra de desplazamiento */
+}
+
+/* Estilos de la barra de desplazamiento en navegadores basados en Firefox */
+/* Establecer el ancho y color de la barra de desplazamiento en Firefox */
+scrollbar-width: thin;
+scrollbar-color: #666 #000; /* Color del pulgar y fondo de la barra de desplazamiento en Firefox */
+
+
+.color-fondo{
+  background: #1C1C24;
+}
+
+.color-navbar{
+  background: #15151A;
+}
+
+.text-navbar{
+  color: #15151A;
+}
+
+/*
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -25,3 +59,4 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+*/
