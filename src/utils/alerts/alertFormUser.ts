@@ -1,33 +1,34 @@
-import { TypeFormTournament } from "@/types/formTournament";
+import { TypeFormUser } from "@/types/formUser";
+import { TypeDefineRolUser } from "@/types/formUserSignup";
 import moment from "moment";
 import Swal from "sweetalert2";
 
 
-export const alertFormTournament = async (initialValues?: TypeFormTournament): Promise<TypeFormTournament> => {
+export const alertFormUser = async (initialValues?: TypeFormUser): Promise<TypeFormUser> => {
 
-  const formInputDefault: TypeFormTournament = {
+  const formInputDefault: TypeFormUser = {
     name: '',
-    date: '',
-    max_participants: 0
+    email: '',
+    role: ''
   };
 
   const formHtml = `
   <form id="myFormTournament" class="custom-form">
     <div class="form-group">
-      <label for="nombre">Nombre Torneo:</label>
+      <label for="nombre">Nombre Usuario:</label>
       <input id="nombre" placeholder="Ingrese el nombre" value="${initialValues?.name || ''}">
     </div>
 
     <div class="form-group">
-      <label for="fecha">Fecha:</label>
-      <input type="date" id="fecha" placeholder="Seleccione la fecha" value="${initialValues?.date || ''}">
+      <label for="correo">Correo:</label>
+      <input type="email" id="correo" placeholder="Seleccione la fecha" value="${initialValues?.email || ''}">
     </div>
 
     <div class="form-group">
-      <label for="jugadores">Jugadores:</label>
-      <select id="jugadores">
-        <option value="2" ${initialValues?.max_participants === 2 ? 'selected' : ''}>1 vs 1</option>
-        <option value="4" ${initialValues?.max_participants === 4 ? 'selected' : ''}>2 vs 2</option>
+      <label for="rol">Rol:</label>
+      <select id="rol">
+        <option value="${TypeDefineRolUser.user}" ${initialValues?.role === TypeDefineRolUser.user ? 'selected' : ''}>usuario</option>
+        <option value="${TypeDefineRolUser.admin}" ${initialValues?.role === TypeDefineRolUser.admin ? 'selected' : ''}>administrador</option>
       </select>
     </div>
   </form>
@@ -46,14 +47,14 @@ export const alertFormTournament = async (initialValues?: TypeFormTournament): P
         return new Promise((resolve) => {
           // Aquí manejas la lógica de envío del formulario
           const name = document.getElementById('nombre') as HTMLInputElement;
-          const fecha = document.getElementById('fecha') as HTMLInputElement;
-          const jugadores = document.getElementById('jugadores') as HTMLInputElement;
+          const email = document.getElementById('correo') as HTMLInputElement;
+          const role = document.getElementById('rol') as HTMLInputElement;
 
 
-          const formInput: TypeFormTournament = {
+          const formInput: TypeFormUser = {
             name: name.value,
-            date: fecha.value,
-            max_participants: parseInt(jugadores.value),
+            email: email.value,
+            role: role.value,
           };
           // Resuelve la promesa a true para que SweetAlert2 se cierre
           resolve(formInput);

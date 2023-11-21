@@ -92,7 +92,6 @@ export default function Signin() {
                         src={'/tenisFondo.jpg'}
                         alt='fondo-tenis'
                         width={1800}
-                        layout='responsive'
                         height={900}
                         className='w-full h-full bg-blue-500 border-l-2 border-l-slate-300 rounded-l-3xl'
                     />

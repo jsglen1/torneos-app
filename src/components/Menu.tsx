@@ -34,7 +34,7 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
     useEffect(() => {
 
         if (session?.user?.rol) {
-           
+
             const r = session.user.rol;
             setRol(r);
         }
@@ -57,9 +57,6 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
                         </div>
 
                         <div className='flex gap-3'>
-                            <li>
-                                <Image src={'/agregar-usuario.png'} alt='agregar-usuario' width={35} height={35} className='p-1 bg-white rounded-full border-slate-500  border' />
-                            </li>
                             <li>
                                 <Image src={'/notificacion.png'} alt='agregar-usuario' width={35} height={35} className='p-1 bg-white rounded-full border-slate-500  border' />
 
@@ -92,10 +89,16 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
 
                         {/* para admin*/}
                         {rol === TypeDefineRolUser.admin || rol === TypeDefineRolUser.super_admin ?
-                            <li className={clsx('flex gap-1 justify-start items-center p-1', { 'bg-green-500 rounded-full': pathname === '/dashboard/events' })}>
-                                <Image src={'/eventos.png'} alt='copa' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />
-                                <Link href={'/dashboard/events'}>Eventos</Link>
-                            </li>
+                            <>
+                                <li className={clsx('flex gap-1 justify-start items-center p-1', { 'bg-green-500 rounded-full': pathname === '/dashboard/events' })}>
+                                    <Image src={'/eventos.png'} alt='copa' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />
+                                    <Link href={'/dashboard/events'}>Eventos</Link>
+                                </li>
+                                <li className={clsx('flex gap-1 justify-start items-center p-1', { 'bg-green-500 rounded-full': pathname === '/dashboard/users' })}>
+                                    <Image src={'/agregar-usuario.png'} alt='agregar-usuario' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />
+                                    <Link href={'/dashboard/users'}>Usuarios</Link>
+                                </li>
+                            </>
                             : null}
                         <li className={clsx('flex gap-1 justify-start items-center p-1', { 'bg-green-500 rounded-full': pathname === '/dashboard/setting' })}>
                             <Image src={'/configuraciones.png'} alt='configuraciones' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />
