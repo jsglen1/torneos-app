@@ -18,7 +18,7 @@ export const handler = NextAuth({
                 email: { label: "Email", type: "text", placeholder: "jsmith" },
                 password: { label: "Password", type: "password" },
             },
-            async authorize(credentials, req): Promise<any | null> {
+            async authorize(credentials, req) {
                 const userFound = await prisma.user.findUnique({
                     where: {
                         email: credentials?.email,
@@ -34,52 +34,82 @@ export const handler = NextAuth({
                 const { password, ...userClient } = userFound;
 
                 // Devolver el objeto sin el campoNoDeseado
-                return userClient;
+                return {
+                    id: userFound.id_user,
+                    email: userFound.email,
+                    name: userFound.name,
+                    rol: userFound.role
+                };
 
             },
 
         }),
     ],
+
     callbacks: {
+        async jwt({ token, user }) {
+            return { ...token, ...user };
+        },
         async session({ session, token }) {
-            // Usa el mismo formato de datos que la función authorize
-            session.user = {
-                id: token.id,
-                name: token.name,
-                email: token.email,
-                rol: token.rol,
-                token: token.token,
-            };
+            session.user = token as any;
             return session;
         },
-        async jwt({ user, account, profile, token }) {
-
-            if (account?.provider === "credentials" && profile?.email) {
-                const userEmail = profile.email;
-
-                const response = await fetch("http://localhost:8000/auth/login", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ email: userEmail }),
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    token.token = data.access_token
-                    token.id = data.id_user
-
-                }
-            }
-
-            return token;
-        },
     },
-    
+
     pages: {
         signIn: '/',
     },
 });
 
 export { handler as GET, handler as POST };
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+callbacks: {
+    async session({ session, token }) {
+        // Usa el mismo formato de datos que la función authorize
+        session.user = {
+            id: token.id,
+            name: token.name,
+            email: token.email,
+            rol: token.rol,
+            token: token.token,
+        };
+        return session;
+    },
+    async jwt({ user, account, profile, token }) {
+
+        if (account?.provider === "credentials" && profile?.email) {
+            const userEmail = profile.email;
+
+            const response = await fetch("http://localhost:8000/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email: userEmail }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                token.token = data.access_token
+                token.id = data.id_user
+
+            }
+        }
+
+        return token;
+    },
+},
+*/

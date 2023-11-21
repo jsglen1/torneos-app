@@ -43,13 +43,7 @@ export default function DashboardPage() {
         });
     }
 
-    const { data: session } = useSession()
-
-    useEffect(() => {
-        if (session) {
-            console.log(JSON.stringify(session))
-        }
-    }, [session])
+    
 
 
     return (

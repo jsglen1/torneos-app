@@ -40,17 +40,17 @@ export async function GET(req: Request, res: Response) {
 export async function POST(req: Request, res: Response) {
   try {
 
-     // protected route
-     const session = await getServerSession(handler)
-     if (!session) {
-       return NextResponse.json(
-         {
-           message: 'no autenticado'
-         }, {
-         status: 403
-       }
-       )
-     }
+    // protected route
+    const session = await getServerSession(handler)
+    if (!session) {
+      return NextResponse.json(
+        {
+          message: 'no autenticado'
+        }, {
+        status: 403
+      }
+      )
+    }
 
     const body: TypeFormTournament = await req.json();
     const newTournament = await prisma.tournament.create({
@@ -81,17 +81,17 @@ export async function POST(req: Request, res: Response) {
 export async function PUT(req: Request, res: Response) {
   try {
 
-     // protected route
-     const session = await getServerSession(handler)
-     if (!session) {
-       return NextResponse.json(
-         {
-           message: 'no autenticado'
-         }, {
-         status: 403
-       }
-       )
-     }
+    // protected route
+    const session = await getServerSession(handler)
+    if (!session) {
+      return NextResponse.json(
+        {
+          message: 'no autenticado'
+        }, {
+        status: 403
+      }
+      )
+    }
 
     const body: TypeTournamentResponse = await req.json();
     const updatedTournament = await prisma.tournament.update(
@@ -128,21 +128,19 @@ export async function PUT(req: Request, res: Response) {
 export async function DELETE(req: Request, res: Response) {
   try {
 
-     // protected route
-     const session = await getServerSession(handler)
-     if (!session) {
-       return NextResponse.json(
-         {
-           message: 'no autenticado'
-         }, {
-         status: 403
-       }
-       )
-     }
+    // protected route
+    const session = await getServerSession(handler)
+    if (!session) {
+      return NextResponse.json(
+        {
+          message: 'no autenticado'
+        }, {
+        status: 403
+      }
+      )
+    }
 
     const body: { id_tournament: number } = await req.json();
-
-    console.log('llego fue ' + JSON.stringify(body))
 
     const deleteTournament = await prisma.tournament.delete(
       {

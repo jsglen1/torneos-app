@@ -3,12 +3,14 @@ import { handleMenuDrawer } from '@/redux/dashboardSlice'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx'
 import MenuDrawer from './MenuDrawer'
-import {signOut} from 'next-auth/react'
+import { signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
+import { TypeDefineRolUser } from '@/types/formUserSignup'
 
 interface MenuProps {
     children: React.ReactNode;
@@ -20,10 +22,25 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
     const dispatch = useDispatch()
     const pathname = usePathname();
 
-    const Out = async () =>{
+    const Out = async () => {
         await signOut()
         router.push('/')
     }
+
+    const [rol, setRol] = useState<string | undefined>('');
+
+    const { data: session, status } = useSession()
+
+    useEffect(() => {
+
+        if (session?.user?.rol) {
+           
+            const r = session.user.rol;
+            setRol(r);
+        }
+
+    }, [session]);
+
 
     return (
         <>
@@ -52,13 +69,13 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
 
                             </li>
                             <li>
-                                <Image src={'/usuario.png'} alt='agregar-usuario' width={35} height={35} className='p-1 bg-white rounded-full border-slate-500  border hover:cursor-pointer' onClick={() => { Out()}} />
+                                <Image src={'/usuario.png'} alt='agregar-usuario' width={35} height={35} className='p-1 bg-white rounded-full border-slate-500  border hover:cursor-pointer' onClick={() => { Out() }} />
                             </li>
 
                         </div>
                     </ul>
                 </nav>
-                <MenuDrawer/>
+                <MenuDrawer />
             </header>
 
             <div className='h-[92vh] w-full flex' style={{ background: '#1C1C24' }}>
@@ -72,11 +89,14 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
                             <Image src={'/copa-de-trofeo-silueta.png'} alt='copa' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />
                             <Link href={'/dashboard/tournaments'}>Torneos</Link>
                         </li>
+
                         {/* para admin*/}
-                        <li className={clsx('flex gap-1 justify-start items-center p-1', { 'bg-green-500 rounded-full': pathname === '/dashboard/events' })}>
-                            <Image src={'/eventos.png'} alt='copa' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />
-                            <Link href={'/dashboard/events'}>Eventos</Link>
-                        </li>
+                        {rol === TypeDefineRolUser.admin || rol === TypeDefineRolUser.super_admin ?
+                            <li className={clsx('flex gap-1 justify-start items-center p-1', { 'bg-green-500 rounded-full': pathname === '/dashboard/events' })}>
+                                <Image src={'/eventos.png'} alt='copa' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />
+                                <Link href={'/dashboard/events'}>Eventos</Link>
+                            </li>
+                            : null}
                         <li className={clsx('flex gap-1 justify-start items-center p-1', { 'bg-green-500 rounded-full': pathname === '/dashboard/setting' })}>
                             <Image src={'/configuraciones.png'} alt='configuraciones' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />
                             <Link href={'/dashboard/setting'}>Configuracion</Link>
@@ -91,7 +111,7 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
                 </main>
             </div>
 
-        
+
 
 
         </>

@@ -34,7 +34,7 @@ export default function Signin() {
             redirect: false,
         });
 
-        console.log('response '+res)
+       
         if (res?.error) {
             alert(res.error)
         } else {
