@@ -1,5 +1,4 @@
 import React from 'react'
-import { dataProducts } from './CardTournament'
 import Image from 'next/image'
 import FormTournament from './FormTournament'
 

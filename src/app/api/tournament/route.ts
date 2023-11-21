@@ -4,13 +4,14 @@ import { TypeFormTournament } from '@/types/formTournament';
 import { TypeTournamentResponse } from '@/types/tournamentReponse';
 import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth"
-import { handler } from '../auth/[...nextauth]/route';
+//import { authOptions } from '../auth/[...nextauth]/route';
 
 export async function GET(req: Request, res: Response) {
   try {
 
     // protected route
-    const session = await getServerSession(handler)
+    /*
+    const session = await getServerSession(authOptions)
     if (!session) {
       return NextResponse.json(
         {
@@ -20,6 +21,7 @@ export async function GET(req: Request, res: Response) {
       }
       )
     }
+    */
 
     const tournaments = await prisma.tournament.findMany();
     return NextResponse.json(tournaments)
@@ -41,7 +43,8 @@ export async function POST(req: Request, res: Response) {
   try {
 
     // protected route
-    const session = await getServerSession(handler)
+    /*
+    const session = await getServerSession(authOptions)
     if (!session) {
       return NextResponse.json(
         {
@@ -51,6 +54,7 @@ export async function POST(req: Request, res: Response) {
       }
       )
     }
+    */
 
     const body: TypeFormTournament = await req.json();
     const newTournament = await prisma.tournament.create({
@@ -82,7 +86,8 @@ export async function PUT(req: Request, res: Response) {
   try {
 
     // protected route
-    const session = await getServerSession(handler)
+    /*
+    const session = await getServerSession(authOptions)
     if (!session) {
       return NextResponse.json(
         {
@@ -92,6 +97,7 @@ export async function PUT(req: Request, res: Response) {
       }
       )
     }
+    */
 
     const body: TypeTournamentResponse = await req.json();
     const updatedTournament = await prisma.tournament.update(
@@ -129,7 +135,8 @@ export async function DELETE(req: Request, res: Response) {
   try {
 
     // protected route
-    const session = await getServerSession(handler)
+    /*
+    const session = await getServerSession(authOptions)
     if (!session) {
       return NextResponse.json(
         {
@@ -139,6 +146,7 @@ export async function DELETE(req: Request, res: Response) {
       }
       )
     }
+    */
 
     const body: { id_tournament: number } = await req.json();
 
