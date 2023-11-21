@@ -1,20 +1,22 @@
 [
     {
-        "id": 1,
+        "id_tournament": 1,
         "name": "Torneo A",
         "date": "2023-11-19",
-        "players": 2
+        "max_participants": 2
     },
     {
-        "id": 2,
+        "id_tournament": 2,
         "name": "Torneo B",
         "date": "2023-11-20",
-        "players": 1
+        "max_participants": 1
     },
     {
-        "id": 3,
+        "id_tournament": 3,
         "name": "Torneo C",
         "date": "2023-11-21",
-        "players": 2
+        "max_participants": 2
     }
 ]
+
+

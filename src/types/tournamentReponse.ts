@@ -1,6 +1,7 @@
 export interface TypeTournamentResponse {
-    id: number
+    id_tournament: number
     name: string
     date: string
-    players: number
+    max_participants: number
 }
+

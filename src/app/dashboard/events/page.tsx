@@ -3,30 +3,97 @@ import { alertFormTournament } from '@/utils/alerts/alertFormTournament'
 import { alertValidateError } from '@/utils/alerts/alertValidateError'
 import { validateAlertFormTournament } from '@/utils/validate/validateAlertFormTournament'
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import tournamentsData from '@/data_fake/Tournaments.json'
 import { TypeTournamentResponse } from '@/types/tournamentReponse'
 import Swal from 'sweetalert2'
+import { alertValidateSuccess } from '@/utils/alerts/alertValidateSucces'
 
 export default function Events() {
+
+    const [tournaments, setTournaments] = useState<TypeTournamentResponse[]>([])
 
     const handleCreate = async () => {
         const formData = await alertFormTournament()
         if (validateAlertFormTournament(formData)) { // Not valid
-            alertValidateError('Torneo', 'No valido')
+            alertValidateError('No valido','Torneo')
         } else { // valid
-            /*
-            CreateProduct(token, formData)
-                .then(datosProduct => { dispatch(addProduct(datosProduct)) }) // refresh Ui create
-                .catch(error => { });
-            */
+
+            const requestOptionsPostTournament = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Authorization': `Bearer ${accessToken}`
+                    // Añade el encabezado de autorización si es necesario
+                },
+                // Incluye el cuerpo en una solicitud POST si es necesario
+                body: JSON.stringify(formData),
+            };
+
+            fetch(`/api/tournament`, requestOptionsPostTournament)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(dataTournament => {
+                    // Aquí puedes procesar la dataTournament como desees
+                    // Por ejemplo, actualizar el estado con el nuevo torneo creado
+                    setTournaments([...tournaments, dataTournament]);
+                })
+                .catch(error => {
+                    alertValidateError('Crear torneo fallo', 'Torneos')
+                });
         }
     }
 
+
+
     const handleUpdate = async (tournament: TypeTournamentResponse) => {
         const formData = await alertFormTournament(tournament)
+        if (validateAlertFormTournament(formData)) { // Not valid
+            alertValidateError('No valido','Torneo')
+        } else { // valid
 
+            const setFormData: TypeTournamentResponse = {
+                ...formData,
+                id_tournament: tournament.id_tournament // Agregar el campo id_tournament al objeto setFormData
+            };
+
+            const requestOptionsPostTournament = {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Authorization': `Bearer ${accessToken}`
+                    // Añade el encabezado de autorización si es necesario
+                },
+                // Incluye el cuerpo en una solicitud POST si es necesario
+                body: JSON.stringify(setFormData),
+            };
+
+            fetch(`/api/tournament`, requestOptionsPostTournament)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(dataTournament => {
+                    // Aquí puedes procesar la dataTournament como desees
+                    // Por ejemplo, actualizar el estado con el nuevo torneo creado
+                    setTournaments(prevTournaments => [
+                        ...prevTournaments.filter(t => t.id_tournament !== tournament.id_tournament),
+                        dataTournament
+                    ]);
+                })
+                .catch(error => {
+                    alertValidateError('Actulizar torneo fallo', 'Torneos')
+                });
+        }
     }
+
+
 
     const handleDelete = async (tournament: TypeTournamentResponse) => {
         Swal.fire({
@@ -37,10 +104,75 @@ export default function Events() {
             customClass: 'alert-form',
             cancelButtonColor: "#d33",
             confirmButtonText: "si, Cancelar!"
-          }).then((result) => {
-         
-          });
+        }).then((result) => {
+
+
+            const requestOptionsDeleteTournament = {
+                method: 'DELETE',
+
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Authorization': `Bearer ${accessToken}`
+                    // Añade el encabezado de autorización si es necesario
+                },
+                // Incluye el cuerpo en una solicitud POST si es necesario
+                body: JSON.stringify({
+                    id_tournament: tournament.id_tournament
+                }),
+            };
+
+            fetch(`/api/tournament`, requestOptionsDeleteTournament)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error: ${response.status}`);
+                    }
+
+                    // Filtra los torneos para excluir el torneo eliminado
+                    const updatedTournaments = tournaments.filter((t) => t.id_tournament !== tournament.id_tournament);
+                    setTournaments(updatedTournaments);
+
+                })
+                .catch(error => {
+                    alertValidateError('Eliminar torneos fallo', 'torneos')
+                });
+        });
     }
+
+
+
+
+    useEffect(() => {
+
+        const requestOptionsGetTournaments = {
+            method: 'GET',
+            /*
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+            */
+            // No incluyas el cuerpo en una solicitud GET
+        };
+
+        fetch(`/api/tournament`, requestOptionsGetTournaments)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(dataTournaments => {
+
+                // Aquí puedes procesar la dataTournaments como desees
+                setTournaments(dataTournaments)
+            })
+            .catch(error => {
+                alertValidateSuccess('Obtener torneos Fallo', 'Torneos')
+            });
+
+
+
+    }, [])
 
     return (
         <>
@@ -84,11 +216,11 @@ export default function Events() {
                             </tr>
                         </thead>
                         <tbody>
-                            {tournamentsData.map((item) => (
-                                <tr key={item.id} className={`text-center items-center justify-center ${item.id % 2 === 0 ? 'color-navbar' : ''}`}>
+                            {tournaments?.map((item) => (
+                                <tr key={item.id_tournament} className={`text-center items-center justify-center ${item.id_tournament % 2 === 0 ? 'color-navbar' : ''}`}>
                                     <td> <span className=''>{item.name}</span></td>
                                     <td>{item.date}</td>
-                                    <td>jugadores {item.players}</td>
+                                    <td>jugadores {item.max_participants}</td>
                                     <td className='flex items-center p-3 justify-center gap-4 h-full '>
                                         <Image src={'/boligrafo.png'} alt='boligrafo' className='  rounded cursor-pointer' width={20} height={20} onClick={() => { handleUpdate(item) }} />
                                         <Image src={'/cancelar.png'} alt='candelar' className='  rounded cursor-pointer' width={20} height={20} onClick={() => { handleDelete(item) }} />
@@ -135,11 +267,11 @@ export default function Events() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {tournamentsData.map((item) => (
-                                    <tr key={item.id} className={`text-center items-center justify-center ${item.id % 2 === 0 ? 'color-navbar' : ''}`}>
+                                {tournaments?.map((item) => (
+                                    <tr key={item.id_tournament} className={`text-center items-center justify-center ${item.id_tournament % 2 === 0 ? 'color-navbar' : ''}`}>
                                         <td> <span className=''>{item.name}</span></td>
                                         <td>{item.date}</td>
-                                        <td>jugadores {item.players}</td>
+                                        <td>jugadores {item.max_participants}</td>
                                         <td className='flex items-center p-3 justify-center gap-4 h-full '>
                                             <Image src={'/boligrafo.png'} alt='boligrafo' className='  rounded cursor-pointer' width={20} height={20} onClick={() => { handleUpdate(item) }} />
                                             <Image src={'/cancelar.png'} alt='candelar' className='  rounded cursor-pointer' width={20} height={20} onClick={() => { handleDelete(item) }} />

@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux'
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx'
 import MenuDrawer from './MenuDrawer'
+import {signOut} from 'next-auth/react'
 
 interface MenuProps {
     children: React.ReactNode;
@@ -18,6 +19,11 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
     const router = useRouter()
     const dispatch = useDispatch()
     const pathname = usePathname();
+
+    const Out = async () =>{
+        await signOut()
+        router.push('/')
+    }
 
     return (
         <>
@@ -46,7 +52,7 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
 
                             </li>
                             <li>
-                                <Image src={'/usuario.png'} alt='agregar-usuario' width={35} height={35} className='p-1 bg-white rounded-full border-slate-500  border hover:cursor-pointer' onClick={() => { router.push('/') }} />
+                                <Image src={'/usuario.png'} alt='agregar-usuario' width={35} height={35} className='p-1 bg-white rounded-full border-slate-500  border hover:cursor-pointer' onClick={() => { Out()}} />
                             </li>
 
                         </div>

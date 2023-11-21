@@ -8,7 +8,7 @@ export const alertFormTournament = async (initialValues?: TypeFormTournament): P
   const formInputDefault: TypeFormTournament = {
     name: '',
     date: '',
-    players: 0
+    max_participants: 0
   };
 
   const formHtml = `
@@ -26,8 +26,8 @@ export const alertFormTournament = async (initialValues?: TypeFormTournament): P
     <div class="form-group">
       <label for="jugadores">Jugadores:</label>
       <select id="jugadores">
-        <option value="1" ${initialValues?.players === 1 ? 'selected' : ''}>1 vs 1</option>
-        <option value="2" ${initialValues?.players === 2 ? 'selected' : ''}>2 vs 2</option>
+        <option value="1" ${initialValues?.max_participants === 1 ? 'selected' : ''}>1 vs 1</option>
+        <option value="2" ${initialValues?.max_participants === 2 ? 'selected' : ''}>2 vs 2</option>
       </select>
     </div>
   </form>
@@ -53,7 +53,7 @@ export const alertFormTournament = async (initialValues?: TypeFormTournament): P
           const formInput: TypeFormTournament = {
             name: name.value,
             date: fecha.value,
-            players: parseInt(jugadores.value),
+            max_participants: parseInt(jugadores.value),
           };
           // Resuelve la promesa a true para que SweetAlert2 se cierre
           resolve(formInput);

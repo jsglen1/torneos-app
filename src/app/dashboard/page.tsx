@@ -3,10 +3,11 @@ import { alertFormTournament } from '@/utils/alerts/alertFormTournament'
 import { alertValidateError } from '@/utils/alerts/alertValidateError'
 import { validateAlertFormTournament } from '@/utils/validate/validateAlertFormTournament'
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect } from 'react'
 import tournamentsData from '@/data_fake/Tournaments.json'
 import { TypeTournamentResponse } from '@/types/tournamentReponse'
 import Swal from 'sweetalert2'
+import { useSession } from 'next-auth/react'
 
 export default function DashboardPage() {
 
@@ -37,10 +38,19 @@ export default function DashboardPage() {
             customClass: 'alert-form',
             cancelButtonColor: "#d33",
             confirmButtonText: "si, Cancelar!"
-          }).then((result) => {
-         
-          });
+        }).then((result) => {
+
+        });
     }
+
+    const { data: session } = useSession()
+
+    useEffect(() => {
+        if (session) {
+            console.log(JSON.stringify(session))
+        }
+    }, [session])
+
 
     return (
         <>
@@ -78,10 +88,10 @@ export default function DashboardPage() {
                         </thead>
                         <tbody>
                             {tournamentsData.map((item) => (
-                                <tr key={item.id} className={`text-center items-center justify-center ${item.id % 2 === 0 ? 'color-navbar' : ''}`}>
+                                <tr key={item.id_tournament} className={`text-center items-center justify-center ${item.id_tournament % 2 === 0 ? 'color-navbar' : ''}`}>
                                     <td> <span className=''>{item.name}</span></td>
                                     <td>{item.date}</td>
-                                    <td>jugadores {item.players}</td>
+                                    <td>jugadores {item.max_participants}</td>
                                     <td className='flex items-center p-3 justify-center gap-4 h-full '>
                                         <Image src={'/cancelar.png'} alt='candelar' className='  rounded cursor-pointer' width={20} height={20} onClick={() => { handleDelete(item) }} />
                                     </td>
@@ -128,10 +138,10 @@ export default function DashboardPage() {
                             </thead>
                             <tbody>
                                 {tournamentsData.map((item) => (
-                                    <tr key={item.id} className={`text-center items-center justify-center ${item.id % 2 === 0 ? 'color-navbar' : ''}`}>
+                                    <tr key={item.id_tournament} className={`text-center items-center justify-center ${item.id_tournament % 2 === 0 ? 'color-navbar' : ''}`}>
                                         <td> <span className=''>{item.name}</span></td>
                                         <td>{item.date}</td>
-                                        <td>jugadores {item.players}</td>
+                                        <td>jugadores {item.max_participants}</td>
                                         <td className='flex items-center p-3 justify-center gap-4 h-full '>
                                             <Image src={'/cancelar.png'} alt='candelar' className='  rounded cursor-pointer' width={20} height={20} onClick={() => { handleDelete(item) }} />
                                         </td>

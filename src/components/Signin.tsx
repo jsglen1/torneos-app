@@ -1,8 +1,49 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+import { signIn } from "next-auth/react";
+import { useRouter } from 'next/navigation'
+import React, { useState, ChangeEvent } from 'react'
+import { TypeFormUserSignin } from '@/types/formUserSignin';
+
 
 export default function Signin() {
+
+    const router = useRouter()
+
+    const [formValues, setFormValues] = useState<TypeFormUserSignin>({
+        email: '',
+        password: '',
+    });
+
+
+    // GetDataForm
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        setFormValues({
+            ...formValues,
+            [name]: value,
+        });
+    };
+
+    const handleSignin = async () => {
+        const res = await signIn("credentials", {
+            email: formValues.email,
+            password: formValues.password,
+            redirect: false,
+        });
+
+        console.log('response '+res)
+        if (res?.error) {
+            alert(res.error)
+        } else {
+            router.push('/dashboard')
+            router.refresh()
+        }
+    }
+
+
     return (
         <main>
 
@@ -11,23 +52,23 @@ export default function Signin() {
 
                 <div className='w-full flex flex-col justify-center items-center lg:w-1/2'>
 
-                    <div className='bg-slate-50 w-2/3 m-3 p-5 shadow-lg rounded-xl'>
+                    <div className='bg-slate-50 w-2/3 m-3 p-5 shadow-lg rounded-xl' >
 
                         <h1 className='mb-1 text-xl font-bold'>Bienvenido de nuevo!</h1>
                         <p className='mb-10 text-xs'>Ingresa tus credenciales para acceder a tu cuenta</p>
 
                         <div className='  flex flex-col'>
                             <label htmlFor='email' className='text-sm font-bold mb-1' >Correo</label>
-                            <input type='text' id='email' placeholder='email@gmail.com' className='rounded-md border-2 border-slate-100 p-1 '></input>
+                            <input type='text' id='email' name='email' onChange={handleInputChange} placeholder='email@gmail.com' className='rounded-md border-2 border-slate-100 p-1 '></input>
                         </div>
 
 
                         <div className='  flex flex-col mt-5'>
                             <label htmlFor='password' className='text-sm font-bold mb-1'>Contraseña</label>
-                            <input type='password' id='password' placeholder='******' className='rounded-md border-2 border-slate-100 p-1 '></input>
+                            <input type='password' id='password' name='password' onChange={handleInputChange} placeholder='******' className='rounded-md border-2 border-slate-100 p-1 '></input>
                         </div>
 
-                        <button className='bg-green-500 w-full rounded-lg mt-6 border-green-600 border-2 text-white mb-10 p-1'> <Link href={'/dashboard'} > <p className='w-full'>Ingresar</p></Link> </button>
+                        <button className='bg-green-500 w-full rounded-lg mt-6 border-green-600 border-2 text-white mb-10 p-1' onClick={() => { handleSignin() }}>  <p className='w-full'>Ingresar</p> </button>
 
                         <div className="flex items-center mb-10">
                             <div className="flex-grow border-b-2"></div>
