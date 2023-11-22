@@ -1,7 +1,6 @@
 'use client'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
-import dataTournaments from '@/data_fake/Tournaments.json'
 import { TypeTournamentResponse } from '@/types/tournamentReponse'
 import Swal from 'sweetalert2'
 import { alertValidateError } from '@/utils/alerts/alertValidateError'
