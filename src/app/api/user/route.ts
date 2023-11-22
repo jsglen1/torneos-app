@@ -2,28 +2,26 @@
 import { prisma } from '@/libs/prisma' // Ajusta la ruta según tu estructura de carpetas
 import { TypeFormUser } from '@/types/formUser';
 import { TypeUserResponse } from '@/types/userReponse';
-import { NextResponse } from 'next/server';
+import { NextResponse,NextRequest } from 'next/server';
 import { getServerSession } from "next-auth"
 import { TypeUserUpdate } from '@/types/userUpdate';
 import bcrypt from 'bcrypt';
+import { getToken } from 'next-auth/jwt';
 //import { handler } from '../auth/[...nextauth]/route';
 
-export async function GET(req: Request, res: Response) {
+export async function GET(req: NextRequest, res: NextResponse) {
     try {
 
-        // protected route
-        /*
-        const session = await getServerSession(handler)
-        if (!session) {
-            return NextResponse.json(
-                {
-                    message: 'no autenticado'
-                }, {
-                status: 403
+        const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+        if (!token) {
+          return NextResponse.json(
+            {
+              message: 'Not authorized',
+              status: 403
             }
-            )
+          )
         }
-        */
 
         const tournaments = await prisma.user.findMany();
 
@@ -46,8 +44,19 @@ export async function GET(req: Request, res: Response) {
 }
 
 // register for user , admin 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: NextRequest, res: NextResponse) {
   try {
+
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+    if (!token) {
+      return NextResponse.json(
+        {
+          message: 'Not authorized',
+          status: 403
+        }
+      )
+    }
 
     const body: TypeFormUser = await req.json();
     const hashedPassword = await bcrypt.hash(body.password, 10);
@@ -78,8 +87,19 @@ export async function POST(req: Request, res: Response) {
 
 
 
-export async function PUT(req: Request, res: Response) {
+export async function PUT(req: NextRequest, res: NextResponse) {
     try {
+
+        const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+        if (!token) {
+          return NextResponse.json(
+            {
+              message: 'Not authorized',
+              status: 403
+            }
+          )
+        }
 
         const body: TypeUserUpdate = await req.json();
  
@@ -116,8 +136,19 @@ export async function PUT(req: Request, res: Response) {
 
 
 
-export async function DELETE(req: Request, res: Response) {
+export async function DELETE(req: NextRequest, res: NextResponse) {
     try {
+
+        const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+        if (!token) {
+          return NextResponse.json(
+            {
+              message: 'Not authorized',
+              status: 403
+            }
+          )
+        }
 
         const body: { id_user: number } = await req.json();
 

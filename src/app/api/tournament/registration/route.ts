@@ -2,17 +2,29 @@
 import { prisma } from '@/libs/prisma' // Ajusta la ruta según tu estructura de carpetas
 import { TypeFormUser } from '@/types/formUser';
 import { TypeUserResponse } from '@/types/userReponse';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from "next-auth"
 import { TypeUserUpdate } from '@/types/userUpdate';
 import bcrypt from 'bcrypt';
 import { TypeFormRegistration, TypeRegistration } from '@/types/formRegistration';
+import { getToken } from 'next-auth/jwt';
 //import { handler } from '../auth/[...nextauth]/route';
 
 
 // join tournament
-export async function POST(req: Request, res: Response) {
+export async function POST(req: NextRequest, res: NextResponse) {
     try {
+
+        const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+        if (!token) {
+          return NextResponse.json(
+            {
+              message: 'Not authorized',
+              status: 403
+            }
+          )
+        }
 
         const body: TypeRegistration = await req.json();
 

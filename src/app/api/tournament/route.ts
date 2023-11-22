@@ -7,25 +7,23 @@ import { getServerSession } from "next-auth"
 import { getSession } from 'next-auth/react';
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import { Session } from 'inspector';
+import { getToken } from 'next-auth/jwt';
 
 
-export async function GET(req: Request, res: Response) {
+export async function GET(req: NextRequest, res: NextResponse) {
   try {
-    /*
-    const session = await getServerSession(req)
-    const session = await getServerSession(req)
 
-  
-    if (!session) {
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+    if (!token) {
       return NextResponse.json(
         {
-          message: 'no autenticado'
-        }, {
-        status: 403
-      }
+          message: 'Not authorized',
+          status: 403
+        }
       )
     }
-    */
+
 
     const tournaments = await prisma.tournament.findMany();
     return NextResponse.json(tournaments)
@@ -42,22 +40,20 @@ export async function GET(req: Request, res: Response) {
   }
 }
 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: NextRequest, res: NextResponse) {
   try {
 
-    // protected route
-    /*
-    const session = await getServerSession(authOptions)
-    if (!session) {
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+    if (!token) {
       return NextResponse.json(
         {
-          message: 'no autenticado'
-        }, {
-        status: 403
-      }
+          message: 'Not authorized',
+          status: 403
+        }
       )
     }
-    */
+
 
     const body: TypeFormTournament = await req.json();
     const newTournament = await prisma.tournament.create({
@@ -85,22 +81,20 @@ export async function POST(req: Request, res: Response) {
 
 
 
-export async function PUT(req: Request, res: Response) {
+export async function PUT(req: NextRequest, res: NextResponse) {
   try {
 
-    // protected route
-    /*
-    const session = await getServerSession(authOptions)
-    if (!session) {
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+    if (!token) {
       return NextResponse.json(
         {
-          message: 'no autenticado'
-        }, {
-        status: 403
-      }
+          message: 'Not authorized',
+          status: 403
+        }
       )
     }
-    */
+
 
     const body: TypeTournamentResponse = await req.json();
     const updatedTournament = await prisma.tournament.update(
@@ -134,22 +128,20 @@ export async function PUT(req: Request, res: Response) {
 
 
 
-export async function DELETE(req: Request, res: Response) {
+export async function DELETE(req: NextRequest, res: NextResponse) {
   try {
 
-    // protected route
-    /*
-    const session = await getServerSession(authOptions)
-    if (!session) {
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+    if (!token) {
       return NextResponse.json(
         {
-          message: 'no autenticado'
-        }, {
-        status: 403
-      }
+          message: 'Not authorized',
+          status: 403
+        }
       )
     }
-    */
+
 
     const body: { id_tournament: number } = await req.json();
 

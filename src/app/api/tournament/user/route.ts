@@ -9,11 +9,24 @@ import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import { Session } from 'inspector';
 import { TypeUserResponse } from '@/types/userReponse';
 import { TypeFormRegistration } from '@/types/formRegistration';
+import { getToken } from 'next-auth/jwt';
 
 
 // list joins user with tournament
-export async function POST(req: Request, res: Response) {
+export async function POST(req: NextRequest, res: NextResponse) {
   try {
+
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+    if (!token) {
+      return NextResponse.json(
+        {
+          message: 'Not authorized',
+          status: 403
+        }
+      )
+    }
+
 
     const body: TypeUserResponse = await req.json();
 
@@ -53,8 +66,19 @@ export async function POST(req: Request, res: Response) {
 
 
 // delete joined user tournament
-export async function DELETE(req: Request, res: Response) {
+export async function DELETE(req: NextRequest, res: NextResponse) {
   try {
+
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+    if (!token) {
+      return NextResponse.json(
+        {
+          message: 'Not authorized',
+          status: 403
+        }
+      )
+    }
 
     const body: TypeFormRegistration = await req.json();
 
