@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import React, { useState, ChangeEvent } from 'react'
 import { TypeFormUserSignin } from '@/types/formUserSignin';
 import { alertValidateError } from '@/utils/alerts/alertValidateError';
+import { validateFormSignin } from '@/utils/validate/validateFormSignin';
 
 
 export default function Signin() {
@@ -29,18 +30,24 @@ export default function Signin() {
     };
 
     const handleSignin = async () => {
-        const res = await signIn("credentials", {
-            email: formValues.email,
-            password: formValues.password,
-            redirect: false,
-        });
 
-       
-        if (res?.error) {
-            alertValidateError(`${res.error}`,'Usuario')
+        if (validateFormSignin(formValues)) { // not valid
+            alertValidateError('llene los campos', "Ingresar")
         } else {
-            router.push('/dashboard')
-            router.refresh()
+
+            const res = await signIn("credentials", {
+                email: formValues.email,
+                password: formValues.password,
+                redirect: false,
+            });
+
+
+            if (res?.error) {
+                alertValidateError(`${res.error}`, 'Usuario')
+            } else {
+                router.push('/dashboard')
+                router.refresh()
+            }
         }
     }
 

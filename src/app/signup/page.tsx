@@ -1,6 +1,7 @@
 'use client'
 import { TypeDefineRolUser, TypeFormUserSignup } from '@/types/formUserSignup';
 import { alertValidateError } from '@/utils/alerts/alertValidateError';
+import { validateFormSignup } from '@/utils/validate/validateFormSignup';
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
@@ -29,38 +30,40 @@ export default function SignupPage() {
 
     const handleSignup = async () => {
 
-        const requestOptionsPostTournament = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // 'Authorization': `Bearer ${accessToken}`
-                // Añade el encabezado de autorización si es necesario
-            },
-            // Incluye el cuerpo en una solicitud POST si es necesario
-            body: JSON.stringify(formValues),
-        };
+        if (validateFormSignup(formValues)) { // not valid
+            alertValidateError('llene los campos', "Registrarse")
+        } else {
 
-        fetch(`/api/auth/register`, requestOptionsPostTournament)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(dataUser=> {
-                // Aquí puedes procesar la dataTournament como desees
-                // Por ejemplo, actualizar el estado con el nuevo torneo creado
-                //setTournaments([...tournaments, dataTournament]);
-                router.push('/')
-            })
-            .catch(error => {
-                alertValidateError('Crear Usuario fallo', 'Usuario')
-            });
+            const requestOptionsPostTournament = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Authorization': `Bearer ${accessToken}`
+                    // Añade el encabezado de autorización si es necesario
+                },
+                // Incluye el cuerpo en una solicitud POST si es necesario
+                body: JSON.stringify(formValues),
+            };
+
+            fetch(`/api/auth/register`, requestOptionsPostTournament)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(dataUser => {
+                    // Aquí puedes procesar la dataTournament como desees
+                    // Por ejemplo, actualizar el estado con el nuevo torneo creado
+                    //setTournaments([...tournaments, dataTournament]);
+                    router.push('/')
+                })
+                .catch(error => {
+                    alertValidateError('Crear Usuario fallo', 'Usuario')
+                });
+        }
+
     }
-
-    
-
-
 
 
     return (
