@@ -25,7 +25,7 @@ export default function RootLayout({
 
   const Out = async () => {
     await signOut()
-    router.push('/')
+    //router.push('/')
   }
 
   const { data: session, status } = useSession()

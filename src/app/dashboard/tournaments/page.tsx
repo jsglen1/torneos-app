@@ -8,10 +8,10 @@ export default function Tournaments() {
 
   return (
     <div className='h-full flex text-white text-sm overflow-hidden' >
-      <div className='w-8/12  flex flex-col'>
+      <div className='w-full md:w-8/12 flex flex-col'>
         <CardTournament />
       </div>
-      <div className='w-4/12 '>
+      <div className='hidden md:block w-4/12'>
         <ManageTournament />
       </div>
     </div>
