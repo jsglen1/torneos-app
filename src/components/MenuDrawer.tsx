@@ -6,6 +6,8 @@ import { closeMenuDrawer, openMenuDrawer, handleMenuDrawer } from '@/redux/dashb
 import Image from 'next/image';
 import clsx from 'clsx';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { TypeDefineRolUser } from '@/types/formUserSignup';
 
 export default function MenuDrawer() {
 
@@ -40,6 +42,8 @@ export default function MenuDrawer() {
         dispatch(closeMenuDrawer());
     };
 
+    const { data: session } = useSession()
+
 
     return (
         <div className={drawerStyle} onMouseLeave={handleMouseLeave}>
@@ -52,11 +56,20 @@ export default function MenuDrawer() {
                     <Image src={'/copa-de-trofeo-silueta.png'} alt='copa' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />
                     <Link href={'/dashboard/tournaments'}>Torneos</Link>
                 </li>
+
                 {/* para admin*/}
-                <li className={clsx('flex gap-1 justify-start items-center p-1', { 'bg-green-500 rounded-full': pathname === '/dashboard/events' })}>
-                    <Image src={'/eventos.png'} alt='copa' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />
-                    <Link href={'/dashboard/events'}>Eventos</Link>
-                </li>
+                {session?.user.rol === TypeDefineRolUser.admin || session?.user.rol === TypeDefineRolUser.super_admin ?
+                    <>
+                        <li className={clsx('flex gap-1 justify-start items-center p-1', { 'bg-green-500 rounded-full': pathname === '/dashboard/events' })}>
+                            <Image src={'/eventos.png'} alt='copa' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />
+                            <Link href={'/dashboard/events'}>Eventos</Link>
+                        </li>
+                        <li className={clsx('flex gap-1 justify-start items-center p-1', { 'bg-green-500 rounded-full': pathname === '/dashboard/users' })}>
+                            <Image src={'/agregar-usuario.png'} alt='agregar-usuario' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />
+                            <Link href={'/dashboard/users'}>Usuarios</Link>
+                        </li>
+                    </>
+                    : null}
                 <li className={clsx('flex gap-1 justify-start items-center p-1', { 'bg-green-500 rounded-full': pathname === '/dashboard/setting' })}>
                     <Image src={'/configuraciones.png'} alt='configuraciones' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />
                     <Link href={'/dashboard/setting'}>Configuracion</Link>

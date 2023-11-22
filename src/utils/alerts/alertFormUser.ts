@@ -1,14 +1,16 @@
 import { TypeFormUser } from "@/types/formUser";
 import { TypeDefineRolUser } from "@/types/formUserSignup";
+import { TypeUserResponse } from "@/types/userReponse";
 import moment from "moment";
 import Swal from "sweetalert2";
 
 
-export const alertFormUser = async (initialValues?: TypeFormUser): Promise<TypeFormUser> => {
+export const alertFormUser = async (initialValues?: TypeUserResponse): Promise<TypeFormUser> => {
 
   const formInputDefault: TypeFormUser = {
     name: '',
     email: '',
+    password: '',
     role: ''
   };
 
@@ -16,12 +18,17 @@ export const alertFormUser = async (initialValues?: TypeFormUser): Promise<TypeF
   <form id="myFormTournament" class="custom-form">
     <div class="form-group">
       <label for="nombre">Nombre Usuario:</label>
-      <input id="nombre" placeholder="Ingrese el nombre" value="${initialValues?.name || ''}">
+      <input id="nombre" placeholder="nameExample" value="${initialValues?.name || ''}">
     </div>
 
     <div class="form-group">
       <label for="correo">Correo:</label>
-      <input type="email" id="correo" placeholder="Seleccione la fecha" value="${initialValues?.email || ''}">
+      <input type="email" id="correo" placeholder="email@gmail.com" value="${initialValues?.email || ''}">
+    </div>
+
+    <div class="form-group">
+    <label for="contrasenia">Contraseña:</label>
+    <input type="password" id="contrasenia" placeholder="*******" value="${formInputDefault?.password || ''}">
     </div>
 
     <div class="form-group">
@@ -48,12 +55,14 @@ export const alertFormUser = async (initialValues?: TypeFormUser): Promise<TypeF
           // Aquí manejas la lógica de envío del formulario
           const name = document.getElementById('nombre') as HTMLInputElement;
           const email = document.getElementById('correo') as HTMLInputElement;
+          const password = document.getElementById('contrasenia') as HTMLInputElement;
           const role = document.getElementById('rol') as HTMLInputElement;
 
 
           const formInput: TypeFormUser = {
             name: name.value,
             email: email.value,
+            password: password.value,
             role: role.value,
           };
           // Resuelve la promesa a true para que SweetAlert2 se cierre

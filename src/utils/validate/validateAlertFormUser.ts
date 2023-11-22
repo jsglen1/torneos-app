@@ -1,9 +1,10 @@
 import { TypeFormUser } from "@/types/formUser";
 
-export const validateAlertFormUser = (tournament: TypeFormUser) => {
+export const validateAlertFormUser = (user: TypeFormUser) => {
     return (
-        tournament.name === '' ||
-        tournament.email === '' ||
-        tournament.role === ''
+        user.name === '' ||
+        user.email === '' ||
+        user.password === '' ||
+        user.role === ''
     );
 }

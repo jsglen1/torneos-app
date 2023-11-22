@@ -8,6 +8,7 @@ import tournamentsData from '@/data_fake/Tournaments.json'
 import { TypeUserResponse } from '@/types/userReponse'
 import Swal from 'sweetalert2'
 import { alertValidateSuccess } from '@/utils/alerts/alertValidateSucces'
+import { TypeUserUpdate } from '@/types/userUpdate'
 
 export default function Events() {
 
@@ -16,10 +17,10 @@ export default function Events() {
     const handleCreate = async () => {
         const formData = await alertFormUser()
         if (validateAlertFormUser(formData)) { // Not valid
-            alertValidateError('No valido', 'Torneo')
+            alertValidateError('No valido', 'Usuario')
         } else { // valid
 
-            const requestOptionsPostTournament = {
+            const requestOptionsPostUser = {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -30,17 +31,17 @@ export default function Events() {
                 body: JSON.stringify(formData),
             };
 
-            fetch(`/api/user`, requestOptionsPostTournament)
+            fetch(`/api/user`, requestOptionsPostUser)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`Error: ${response.status}`);
                     }
                     return response.json();
                 })
-                .then(dataTournament => {
-                    // Aquí puedes procesar la dataTournament como desees
+                .then(dataUser => {
+                    // Aquí puedes procesar la dataUser como desees
                     // Por ejemplo, actualizar el estado con el nuevo usuario creado
-                    setUsers([...users, dataTournament]);
+                    setUsers([...users, dataUser]);
                 })
                 .catch(error => {
                     alertValidateError('Crear usuario fallo', 'Torneos')
@@ -53,15 +54,15 @@ export default function Events() {
     const handleUpdate = async (user: TypeUserResponse) => {
         const formData = await alertFormUser(user)
         if (validateAlertFormUser(formData)) { // Not valid
-            alertValidateError('No valido', 'Torneo')
+            alertValidateError('No valido', 'Usuario')
         } else { // valid
 
-            const setFormData: TypeUserResponse = {
+            const setFormData: TypeUserUpdate = {
                 ...formData,
                 id_user: user.id_user // Agregar el campo id_user al objeto setFormData
             };
 
-            const requestOptionsPostTournament = {
+            const requestOptionsPostUser = {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,19 +73,19 @@ export default function Events() {
                 body: JSON.stringify(setFormData),
             };
 
-            fetch(`/api/user`, requestOptionsPostTournament)
+            fetch(`/api/user`, requestOptionsPostUser)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`Error: ${response.status}`);
                     }
                     return response.json();
                 })
-                .then(dataTournament => {
-                    // Aquí puedes procesar la dataTournament como desees
+                .then(dataUser => {
+                    // Aquí puedes procesar la dataUser como desees
                     // Por ejemplo, actualizar el estado con el nuevo usuario creado
                     setUsers(prevTournaments => [
                         ...prevTournaments.filter(t => t.id_user !== user.id_user),
-                        dataTournament
+                        dataUser
                     ]);
                 })
                 .catch(error => {
@@ -107,34 +108,39 @@ export default function Events() {
         }).then((result) => {
 
 
-            const requestOptionsDeleteUser = {
-                method: 'DELETE',
+            if (result.isConfirmed) {
+                const requestOptionsDeleteUser = {
+                    method: 'DELETE',
 
-                headers: {
-                    'Content-Type': 'application/json',
-                    // 'Authorization': `Bearer ${accessToken}`
-                    // Añade el encabezado de autorización si es necesario
-                },
-                // Incluye el cuerpo en una solicitud POST si es necesario
-                body: JSON.stringify({
-                    id_user: user.id_user
-                }),
-            };
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Authorization': `Bearer ${accessToken}`
+                        // Añade el encabezado de autorización si es necesario
+                    },
+                    // Incluye el cuerpo en una solicitud POST si es necesario
+                    body: JSON.stringify({
+                        id_user: user.id_user
+                    }),
+                };
 
-            fetch(`/api/user`, requestOptionsDeleteUser)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Error: ${response.status}`);
-                    }
+                fetch(`/api/user`, requestOptionsDeleteUser)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error: ${response.status}`);
+                        }
 
-                    // Filtra los usuarios para excluir el usuario eliminado
-                    const updatedUsers = users.filter((t) => t.id_user !== user.id_user);
-                    setUsers(updatedUsers);
+                        // Filtra los usuarios para excluir el usuario eliminado
+                        const updatedUsers = users.filter((t) => t.id_user !== user.id_user);
+                        setUsers(updatedUsers);
 
-                })
-                .catch(error => {
-                    alertValidateError('Eliminar usuarios fallo', 'usuarios')
-                });
+                    })
+                    .catch(error => {
+                        alertValidateError('Eliminar usuarios fallo', 'usuarios')
+                    });
+            }
+
+
+
         });
     }
 
@@ -185,7 +191,7 @@ export default function Events() {
                         <p className='text-sm'>edita y administra cada detalle de los usuarios</p>
                     </div>
 
-                    {/* 
+
                     <div className='flex gap-2'>
 
                         <button className='rounded-full border p-1 bg-green-500 hover:bg-green-600 text-white flex items-center justify-center' onClick={() => { handleCreate() }}>
@@ -193,7 +199,7 @@ export default function Events() {
                             <p className='mr-2'>Crear usuario</p>
                         </button>
                     </div>
-                        */}
+
                 </div>
 
 
@@ -244,12 +250,12 @@ export default function Events() {
                     <p className='text-lg font-bold p-1'>Usuarios</p>
                     <p className='text-sm'>edita y administra cada detalle de los usuarios </p>
 
-                    {/*
+
                     <button className='rounded-full border w-full p-1 bg-green-500 hover:bg-green-600 text-white flex items-center justify-center' onClick={() => { handleCreate() }}>
                         <Image src={'/mas-positivo-suma-simbolo-matematico.png'} alt='suma' height={16} width={16} className='p-1 ' />
                         <p className='mr-2'>Crear usuario</p>
                     </button>
-                    */}
+
 
 
                     <div className='flex my-2 ml-auto rounded-full border-slate-500 border p-1' style={{ background: '#15151A' }}>

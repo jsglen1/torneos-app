@@ -2,16 +2,20 @@
 import { prisma } from '@/libs/prisma' // Ajusta la ruta según tu estructura de carpetas
 import { TypeFormTournament } from '@/types/formTournament';
 import { TypeTournamentResponse } from '@/types/tournamentReponse';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from "next-auth"
-//import { authOptions } from '../auth/[...nextauth]/route';
+import { getSession } from 'next-auth/react';
+import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
+import { Session } from 'inspector';
+
 
 export async function GET(req: Request, res: Response) {
   try {
-
-    // protected route
     /*
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(req)
+    const session = await getServerSession(req)
+
+  
     if (!session) {
       return NextResponse.json(
         {
@@ -31,9 +35,8 @@ export async function GET(req: Request, res: Response) {
       return NextResponse.json(
         {
           message: error.message,
-        }, {
-        status: 500
-      }
+          status: 500
+        }
       )
     }
   }

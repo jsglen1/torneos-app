@@ -28,20 +28,7 @@ export default function RootLayout({
     router.push('/')
   }
 
-  const [rol, setRol] = useState<string | undefined>('');
-
   const { data: session, status } = useSession()
-
-  useEffect(() => {
-
-    if (session?.user?.rol) {
-
-      const r = session.user.rol;
-      setRol(r);
-    }
-
-  }, [session]);
-
 
   return (
     <>
@@ -89,7 +76,7 @@ export default function RootLayout({
             </li>
 
             {/* para admin*/}
-            {rol === TypeDefineRolUser.admin || rol === TypeDefineRolUser.super_admin ?
+            {session?.user.rol === TypeDefineRolUser.admin || session?.user.rol === TypeDefineRolUser.super_admin ?
               <>
                 <li className={clsx('flex gap-1 justify-start items-center p-1', { 'bg-green-500 rounded-full': pathname === '/dashboard/events' })}>
                   <Image src={'/eventos.png'} alt='copa' width={35} height={35} className='p-1 rounded-full border-slate-500 border bg-white' />

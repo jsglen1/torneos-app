@@ -14,6 +14,7 @@ declare module "next-auth" { // change type data default next auth
   // type data client useSession
   interface Session {
     user: {
+      id: number;
       email: string;
       token: string;
       rol: string;

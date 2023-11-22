@@ -3,31 +3,55 @@ import { alertFormTournament } from '@/utils/alerts/alertFormTournament'
 import { alertValidateError } from '@/utils/alerts/alertValidateError'
 import { validateAlertFormTournament } from '@/utils/validate/validateAlertFormTournament'
 import Image from 'next/image'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import tournamentsData from '@/data_fake/Tournaments.json'
 import { TypeTournamentResponse } from '@/types/tournamentReponse'
 import Swal from 'sweetalert2'
 import { useSession } from 'next-auth/react'
+import { TypeFormRegistration } from '@/types/formRegistration'
 
 export default function DashboardPage() {
 
-    const handleCreate = async () => {
-        const formData = await alertFormTournament()
-        if (validateAlertFormTournament(formData)) { // Not valid
-            alertValidateError('Torneo', 'No valido')
-        } else { // valid
-            /*
-            CreateProduct(token, formData)
-                .then(datosProduct => { dispatch(addProduct(datosProduct)) }) // refresh Ui create
-                .catch(error => { });
-            */
+    const [tournaments, setTournaments] = useState<TypeTournamentResponse[]>([])
+
+    const { data: session } = useSession()
+
+    useEffect(() => {
+        if (session?.user?.id) {
+            const id_user = session.user.id
+
+            const requestOptionsPostTournament = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Authorization': `Bearer ${accessToken}`
+                    // Añade el encabezado de autorización si es necesario
+                },
+                // Incluye el cuerpo en una solicitud POST si es necesario
+                body: JSON.stringify({ id_user }),
+            };
+
+            fetch(`/api/tournament/user`, requestOptionsPostTournament)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(dataTournament => {
+                    // Aquí puedes procesar la dataTournament como desees
+                    // Por ejemplo, actualizar el estado con el nuevo torneo creado
+                    setTournaments(dataTournament);
+
+                })
+                .catch(error => {
+                    alertValidateError('Crear torneo fallo', 'Torneos')
+                });
+
+
         }
-    }
+    }, [session])
 
-    const handleUpdate = async (tournament: TypeTournamentResponse) => {
-        const formData = await alertFormTournament(tournament)
-
-    }
 
     const handleDelete = async (tournament: TypeTournamentResponse) => {
         Swal.fire({
@@ -40,10 +64,43 @@ export default function DashboardPage() {
             confirmButtonText: "si, Cancelar!"
         }).then((result) => {
 
+            if (result.isConfirmed) {
+
+                const formData: TypeFormRegistration = {
+                    id_user: session?.user.id!!,
+                    id_tournament: tournament.id_tournament
+                }
+
+                const requestOptionsDeleteTournament = {
+                    method: 'DELETE',
+
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Authorization': `Bearer ${accessToken}`
+                        // Añade el encabezado de autorización si es necesario
+                    },
+                    // Incluye el cuerpo en una solicitud POST si es necesario
+                    body: JSON.stringify(formData),
+                };
+
+                fetch(`/api/tournament/user`, requestOptionsDeleteTournament)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error: ${response.status}`);
+                        }
+
+                        // Filtra los torneos para excluir el torneo eliminado
+                        const updatedTournaments = tournaments.filter((t) => t.id_tournament !== tournament.id_tournament);
+                        setTournaments(updatedTournaments);
+
+                    })
+                    .catch(error => {
+                        alertValidateError('Eliminar Registro fallo', 'Registro')
+                    });
+
+            }
         });
     }
-
-    
 
 
     return (
@@ -81,11 +138,11 @@ export default function DashboardPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {tournamentsData.map((item) => (
+                            {tournaments?.map((item) => (
                                 <tr key={item.id_tournament} className={`text-center items-center justify-center ${item.id_tournament % 2 === 0 ? 'color-navbar' : ''}`}>
                                     <td> <span className=''>{item.name}</span></td>
                                     <td>{item.date}</td>
-                                    <td>jugadores {item.max_participants}</td>
+                                    <td>{item.max_participants}</td>
                                     <td className='flex items-center p-3 justify-center gap-4 h-full '>
                                         <Image src={'/cancelar.png'} alt='candelar' className='  rounded cursor-pointer' width={20} height={20} onClick={() => { handleDelete(item) }} />
                                     </td>
@@ -106,10 +163,6 @@ export default function DashboardPage() {
                     <p className='text-lg font-bold p-1'>Historial de Inscripciones</p>
                     <p className='text-sm'>Verifica cada detalle de los torn<span className='text-green-500'>eos.</span> en los que participas </p>
 
-                    <button className='rounded-full border w-full p-1 bg-green-500 hover:bg-green-600 text-white flex items-center justify-center' onClick={() => { handleCreate() }}>
-                        <Image src={'/mas-positivo-suma-simbolo-matematico.png'} alt='suma' height={16} width={16} className='p-1 ' />
-                        <p className='mr-2'>Crear productos</p>
-                    </button>
 
 
 
@@ -131,11 +184,11 @@ export default function DashboardPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {tournamentsData.map((item) => (
+                                {tournaments?.map((item) => (
                                     <tr key={item.id_tournament} className={`text-center items-center justify-center ${item.id_tournament % 2 === 0 ? 'color-navbar' : ''}`}>
                                         <td> <span className=''>{item.name}</span></td>
                                         <td>{item.date}</td>
-                                        <td>jugadores {item.max_participants}</td>
+                                        <td>{item.max_participants}</td>
                                         <td className='flex items-center p-3 justify-center gap-4 h-full '>
                                             <Image src={'/cancelar.png'} alt='candelar' className='  rounded cursor-pointer' width={20} height={20} onClick={() => { handleDelete(item) }} />
                                         </td>

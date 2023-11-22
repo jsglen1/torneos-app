@@ -4,6 +4,8 @@ import { TypeFormUser } from '@/types/formUser';
 import { TypeUserResponse } from '@/types/userReponse';
 import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth"
+import { TypeUserUpdate } from '@/types/userUpdate';
+import bcrypt from 'bcrypt';
 //import { handler } from '../auth/[...nextauth]/route';
 
 export async function GET(req: Request, res: Response) {
@@ -43,27 +45,17 @@ export async function GET(req: Request, res: Response) {
     }
 }
 
-/*
+// register for user , admin 
 export async function POST(req: Request, res: Response) {
   try {
 
-    // protected route
-    const session = await getServerSession(handler)
-    if (!session) {
-      return NextResponse.json(
-        {
-          message: 'no autenticado'
-        }, {
-        status: 403
-      }
-      )
-    }
-
     const body: TypeFormUser = await req.json();
+    const hashedPassword = await bcrypt.hash(body.password, 10);
     const newTournament = await prisma.user.create({
       data: {
         name: body.name,
         email: body.email,
+        password : hashedPassword,
         role: body.role
       }
     })
@@ -82,28 +74,16 @@ export async function POST(req: Request, res: Response) {
     }
   }
 }
-*/
+
 
 
 
 export async function PUT(req: Request, res: Response) {
     try {
 
-        // protected route
-        /*
-        const session = await getServerSession(handler)
-        if (!session) {
-            return NextResponse.json(
-                {
-                    message: 'no autenticado'
-                }, {
-                status: 403
-            }
-            )
-        }
-        */
-
-        const body: TypeUserResponse = await req.json();
+        const body: TypeUserUpdate = await req.json();
+ 
+        const hashedPassword = await bcrypt.hash(body.password, 10);
         const updatedTournament = await prisma.user.update(
             {
                 where: {
@@ -112,6 +92,7 @@ export async function PUT(req: Request, res: Response) {
                 data: {
                     name: body.name,
                     email: body.email,
+                    password: hashedPassword,
                     role: body.role
                 }
 
@@ -137,20 +118,6 @@ export async function PUT(req: Request, res: Response) {
 
 export async function DELETE(req: Request, res: Response) {
     try {
-
-        // protected route
-        /*
-        const session = await getServerSession(handler)
-        if (!session) {
-            return NextResponse.json(
-                {
-                    message: 'no autenticado'
-                }, {
-                status: 403
-            }
-            )
-        }
-        */
 
         const body: { id_user: number } = await req.json();
 

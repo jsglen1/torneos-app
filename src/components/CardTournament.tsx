@@ -5,10 +5,16 @@ import dataTournaments from '@/data_fake/Tournaments.json'
 import { TypeTournamentResponse } from '@/types/tournamentReponse'
 import Swal from 'sweetalert2'
 import { alertValidateError } from '@/utils/alerts/alertValidateError'
+import { useSession } from 'next-auth/react'
+import { TypeFormRegistration, TypeRegistration } from '@/types/formRegistration'
+import { alertValidateSuccess } from '@/utils/alerts/alertValidateSucces'
 
 export default function CardTournament() {
 
     const [tournaments, setTournaments] = useState<TypeTournamentResponse[]>([])
+
+    const { data: session } = useSession()
+
 
     useEffect(() => {
 
@@ -36,7 +42,7 @@ export default function CardTournament() {
                 setTournaments(dataTournaments)
             })
             .catch(error => {
-                alert(error)
+
                 alertValidateError('Obtener torneos fallo', 'torneos')
             });
 
@@ -54,6 +60,54 @@ export default function CardTournament() {
             cancelButtonColor: "#d33",
             confirmButtonText: "si, unirme!"
         }).then((result) => {
+
+
+            if (result.isConfirmed) {
+
+
+                const formData: TypeRegistration = {
+                    id_user: session?.user.id!!,
+                    id_tournament: tournament.id_tournament,
+                    max_participants: tournament.max_participants
+                }
+
+
+                const requestOptionsPostTournament = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Authorization': `Bearer ${accessToken}`
+                        // Añade el encabezado de autorización si es necesario
+                    },
+                    // Incluye el cuerpo en una solicitud POST si es necesario
+                    body: JSON.stringify(formData),
+                };
+
+                fetch(`/api/tournament/registration`, requestOptionsPostTournament)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(dataTournament => {
+                        // Aquí puedes procesar la dataTournament como desees
+                        // Por ejemplo, actualizar el estado con el nuevo torneo creado
+                        //setTournaments([...tournaments, dataTournament]);
+                        alertValidateSuccess('Completado', 'Registro')
+                    })
+                    .catch((error: Error) => {
+
+                        if (error.message === '409') {
+                            alertValidateError('ya esta registrado', 'Registro')
+                        }
+                        if (error.message === '439') {
+                            alertValidateError('Cupos llenos', 'Registro')
+                        }
+
+                    });
+
+            }
 
         });
     }

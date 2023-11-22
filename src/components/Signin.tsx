@@ -6,6 +6,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from 'next/navigation'
 import React, { useState, ChangeEvent } from 'react'
 import { TypeFormUserSignin } from '@/types/formUserSignin';
+import { alertValidateError } from '@/utils/alerts/alertValidateError';
 
 
 export default function Signin() {
@@ -36,7 +37,7 @@ export default function Signin() {
 
        
         if (res?.error) {
-            alert(res.error)
+            alertValidateError(`${res.error}`,'Usuario')
         } else {
             router.push('/dashboard')
             router.refresh()

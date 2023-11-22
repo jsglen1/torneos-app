@@ -5,3 +5,13 @@ export interface TypeUserResponse {
     role: string
 }
 
+/*
+export interface TypeUserUpdateResponse {
+    id_user: number
+    name: string
+    email: string
+    password: string
+    role: string
+}
+
+*/

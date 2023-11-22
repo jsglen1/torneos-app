@@ -106,35 +106,39 @@ export default function Events() {
             confirmButtonText: "si, Cancelar!"
         }).then((result) => {
 
+            if(result.isConfirmed){
 
-            const requestOptionsDeleteTournament = {
-                method: 'DELETE',
+                const requestOptionsDeleteTournament = {
+                    method: 'DELETE',
+    
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Authorization': `Bearer ${accessToken}`
+                        // Añade el encabezado de autorización si es necesario
+                    },
+                    // Incluye el cuerpo en una solicitud POST si es necesario
+                    body: JSON.stringify({
+                        id_tournament: tournament.id_tournament
+                    }),
+                };
+    
+                fetch(`/api/tournament`, requestOptionsDeleteTournament)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error: ${response.status}`);
+                        }
+    
+                        // Filtra los torneos para excluir el torneo eliminado
+                        const updatedTournaments = tournaments.filter((t) => t.id_tournament !== tournament.id_tournament);
+                        setTournaments(updatedTournaments);
+    
+                    })
+                    .catch(error => {
+                        alertValidateError('Eliminar torneos fallo', 'torneos')
+                    });
 
-                headers: {
-                    'Content-Type': 'application/json',
-                    // 'Authorization': `Bearer ${accessToken}`
-                    // Añade el encabezado de autorización si es necesario
-                },
-                // Incluye el cuerpo en una solicitud POST si es necesario
-                body: JSON.stringify({
-                    id_tournament: tournament.id_tournament
-                }),
-            };
-
-            fetch(`/api/tournament`, requestOptionsDeleteTournament)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Error: ${response.status}`);
-                    }
-
-                    // Filtra los torneos para excluir el torneo eliminado
-                    const updatedTournaments = tournaments.filter((t) => t.id_tournament !== tournament.id_tournament);
-                    setTournaments(updatedTournaments);
-
-                })
-                .catch(error => {
-                    alertValidateError('Eliminar torneos fallo', 'torneos')
-                });
+            }
+            
         });
     }
 
